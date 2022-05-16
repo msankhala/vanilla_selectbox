@@ -1,0 +1,4 @@
+vanilla-selectbox:
+  version: 1.x
+  js:
+    js/vanilla_selectbox.js: {}
