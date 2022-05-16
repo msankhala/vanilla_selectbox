@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains vanilla_selectbox.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function vanilla_selectbox_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the vanilla_selectbox module.
+    case 'help.page.vanilla_selectbox':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module provides the dropdown select list with vanilla selecbox library.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function vanilla_selectbox_theme() {
+  return [
+    'vanilla_selectbox' => [
+      'render element' => 'children',
+    ],
+  ];
+}

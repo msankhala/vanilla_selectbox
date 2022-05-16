@@ -1,0 +1,5 @@
+name: 'Vanilla SelectBox'
+type: module
+description: 'This module provides the dropdown select list with vanilla selecbox library.'
+core: 8.x
+package: 'User Interface'
