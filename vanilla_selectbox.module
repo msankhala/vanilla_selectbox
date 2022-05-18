@@ -3,9 +3,22 @@
 /**
  * @file
  * Contains vanilla_selectbox.module.
+ *
+ * @see https://github.com/PhilippeMarcMeyer/vanillaSelectBox
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Url;
+
+/**
+ * Define chosen library url.
+ */
+define('VANILLA_SELECTBOX_WEBSITE_URL', 'https://github.com/PhilippeMarcMeyer/vanillaSelectBox');
+define('VANILLA_SELECTBOX_INCLUDE_ADMIN', 0);
+define('VANILLA_SELECTBOX_INCLUDE_NO_ADMIN', 1);
+define('VANILLA_SELECTBOX_INCLUDE_EVERYWHERE', 2);
 
 /**
  * Implements hook_help().
@@ -16,7 +29,9 @@ function vanilla_selectbox_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.vanilla_selectbox':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('This module provides the dropdown select list with vanilla selecbox library.') . '</p>';
+      $output .= '<p>' . t('Vanilla SelectBox module uses the Vanilla SelectBox library to make your < select > elements more user-friendly.') . '</p>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<p>' . t('Configure at: <a href=":structure_types">admin/config/user-interface/vanilla-selectbox</a>', [':structure_types' => Url::fromRoute('vanilla_selectbox.admin')->toString()]) . '</p>';
       return $output;
 
     default:
