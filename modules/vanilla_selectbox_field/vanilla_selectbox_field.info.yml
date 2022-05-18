@@ -1,0 +1,9 @@
+name: Vanill SelectBox Field
+description: Makes select elements more user-friendly using <a href="https://github.com/PhilippeMarcMeyer/vanillaSelectBox">Vanill SelectBox</a>.
+package: User interface
+configure: vanilla_selectbox.admin
+core_version_requirement: ^8 || ^9
+core: 8.x
+type: module
+dependencies:
+  - vanilla_selectbox:vanilla_selectbox
