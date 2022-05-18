@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drush integration for chosen.
+ * Drush integration for vanilla_selectbox.
  */
 
 use Symfony\Component\Filesystem\Filesystem;
@@ -27,7 +27,7 @@ function vanilla_selectbox_lib_drush_command() {
     'arguments' => [
       'path' => dt('Optional. A path where to install the Vanilla SelectBox plugin. If omitted Drush will use the default location.'),
     ],
-    'aliases' => ['chosenplugin'],
+    'aliases' => ['vanilla-selectbox-plugin'],
   ];
 
   return $items;
@@ -39,7 +39,7 @@ function vanilla_selectbox_lib_drush_command() {
 function vanilla_selectbox_lib_drush_help($section) {
   switch ($section) {
     case 'drush:vanilla-selectbox-plugin':
-      return dt('Download and install the Vanilla SelectBox plugin from https://harvesthq.github.com/chosen, default location is /libraries.');
+      return dt('Download and install the Vanilla SelectBox plugin from https://github.com/PhilippeMarcMeyer/vanillaSelectBox, default location is /libraries.');
   }
 }
 
@@ -67,24 +67,24 @@ function drush_vanilla_selectbox_lib_plugin() {
   chdir($path);
 
   // Download the zip archive.
-  if ($filepath = drush_download_file(CHOSEN_DOWNLOAD_URI)) {
+  if ($filepath = drush_download_file(VANILLA_SELECTBOX_DOWNLOAD_URI)) {
     $filename = basename($filepath);
     $dirname = basename($filepath, '.zip');
 
     // Remove any existing Vanilla SelectBox plugin directory.
-    if (is_dir($dirname) || is_dir('chosen')) {
+    if (is_dir($dirname) || is_dir('vanilla_selectbox')) {
       Filesystem::remove($dirname, TRUE);
-      Filesystem::remove('chosen', TRUE);
+      Filesystem::remove('vanilla_selectbox', TRUE);
       \Drupal::logger(dt('A existing Vanilla SelectBox plugin was deleted from @path', ['@path' => $path]))->notice('notice');
     }
 
     // Decompress the zip archive.
     drush_tarball_extract($filename, $dirname);
 
-    // Change the directory name to "chosen" if needed.
-    if ($dirname != 'chosen') {
-      drush_move_dir($dirname, 'chosen', TRUE);
-      $dirname = 'chosen';
+    // Change the directory name to "vanilla_selectbox" if needed.
+    if ($dirname != 'vanilla_selectbox') {
+      drush_move_dir($dirname, 'vanilla_selectbox', TRUE);
+      $dirname = 'vanilla_selectbox';
     }
   }
 

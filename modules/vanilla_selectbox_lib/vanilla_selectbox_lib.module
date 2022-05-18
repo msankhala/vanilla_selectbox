@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * General functions and hook implementations.
+ *
+ * @see https://harvesthq.github.com/vanilla_selectbox/
+ */
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function vanilla_selectbox_lib_library_info_alter(array &$libraries, $module) {
+  if ('vanilla_selectbox_lib' == $module) {
+    if (isset($libraries['vanilla_selectbox'])) {
+      // Set vanilla_selectbox library path.
+      $vanilla_selectbox_js_path = _vanilla_selectbox_lib_get_vanilla_selectbox_path();
+      $minified = file_exists($vanilla_selectbox_js_path . '/vanillaSelectBox.min.js');
+      $vanilla_selectbox_js_path = '/' . $vanilla_selectbox_js_path;
+      $vanilla_selectbox_js = $minified
+        ? $vanilla_selectbox_js_path . '/vanillaSelectBox.min.js'
+        : $vanilla_selectbox_js_path . '/vanillaSelectBox.js';
+      $libraries['vanilla_selectbox']['js'][$vanilla_selectbox_js] = [
+        'minified' => $minified,
+      ];
+      $vanilla_selectbox_css = $vanilla_selectbox_js_path . '/vanillaSelectBox.css';
+      $libraries['vanilla_selectbox.css']['css']['component'][$vanilla_selectbox_css] = [];
+    }
+  }
+}
+
+/**
+ * Get the location of the vanilla_selectbox library.
+ *
+ * @return string
+ *   The location of the library, or FALSE if the library isn't installed.
+ */
+function _vanilla_selectbox_lib_get_vanilla_selectbox_path() {
+  if (\Drupal::hasService('library.libraries_directory_file_finder')) {
+    return \Drupal::service('library.libraries_directory_file_finder')->find('vanillaSelectBox');
+  }
+  elseif (\Drupal::moduleHandler()->moduleExists('libraries')) {
+    return libraries_get_path('vanillaSelectBox');
+  }
+
+  $vanilla_selectbox_js_path = DRUPAL_ROOT . '/libraries/vanillaSelectBox';
+  if (file_exists($vanilla_selectbox_js_path)) {
+    return $vanilla_selectbox_js_path;
+  }
+  return FALSE;
+}
