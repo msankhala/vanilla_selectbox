@@ -1,0 +1,6 @@
+name: Vanilla SelectBox Library
+type: module
+description: Add <a href="https://github.com/PhilippeMarcMeyer/vanillaSelectBox">Vanilla SelectBox</a> library definition.
+package: User interface
+core_version_requirement: ^8 || ^9
+core: 8.x

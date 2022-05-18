@@ -1,0 +1,14 @@
+vanilla_selectbox:
+  remote: https://github.com/PhilippeMarcMeyer/vanillaSelectBox
+  version: 1.0.3
+  license:
+      name: MIT
+      url: https://github.com/PhilippeMarcMeyer/vanillaSelectBox/blob/master/LICENSE
+      gpl-compatible: true
+  js: {}
+
+
+vanilla_selectbox.css:
+  version: 1.0.3
+  css:
+    component: {}

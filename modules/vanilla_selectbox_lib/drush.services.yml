@@ -1,0 +1,5 @@
+services:
+  vanilla_selectbox_lib.commands:
+    class: \Drupal\vanilla_selectbox_lib\Commands\VanillaSelectBoxLibCommands
+    tags:
+      - { name: drush.command }
