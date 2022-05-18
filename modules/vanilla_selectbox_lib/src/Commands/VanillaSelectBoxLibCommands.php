@@ -2,10 +2,10 @@
 
 namespace Drupal\vanilla_selectbox_lib\Commands;
 
-use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Symfony\Component\Filesystem\Filesystem;
 use Psr\Log\LogLevel;
+use Drush\Commands\DrushCommands;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * The Vanilla SelectBox plugin URI.
@@ -24,6 +24,23 @@ define('VANILLA_SELECTBOX_DOWNLOAD_URI', 'https://github.com/PhilippeMarcMeyer/v
  *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
  */
 class VanillaSelectBoxLibCommands extends DrushCommands {
+
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * AssetDumper constructor.
+   *
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file handler.
+   */
+  public function __construct(FileSystemInterface $file_system) {
+    $this->fileSystem = $file_system;
+  }
 
   /**
    * Download and install the Vanilla SelectBox plugin.
@@ -53,24 +70,26 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
     chdir($path);
 
     // Download the zip archive.
-    if ($filepath = $this->drushDownloadFile(CHOSEN_DOWNLOAD_URI)) {
+    if ($filepath = $this->drushDownloadFile(VANILLA_SELECTBOX_DOWNLOAD_URI)) {
       $filename = basename($filepath);
-      $dirname = basename($filepath, '.zip');
+      // $dirname = basename($filepath, '.zip');
+      $dirname = 'vanillaSelectBox';
+      $extracted_dirname = 'vanillaSelectBox-master';
 
       // Remove any existing Vanilla SelectBox plugin directory.
-      if (is_dir($dirname) || is_dir('vanilla_selectbox')) {
-        Filesystem::remove($dirname, TRUE);
-        Filesystem::remove('vanilla_selectbox', TRUE);
+      if (is_dir($dirname) || is_dir($extracted_dirname)) {
+        $this->fileSystem->deleteRecursive($dirname);
+        $this->fileSystem->deleteRecursive($extracted_dirname);
         $this->drushLog(dt('A existing Vanilla SelectBox plugin was deleted from @path', ['@path' => $path]), 'notice');
       }
 
       // Decompress the zip archive.
-      $this->drushTarballExtract($filename, $dirname);
+      $this->drushTarballExtract($filename);
 
-      // Change the directory name to "vanilla_selectbox" if needed.
-      if ('vanilla_selectbox' !== $dirname) {
-        $this->drushMoveDir($dirname, 'vanilla_selectbox');
-        $dirname = 'vanilla_selectbox';
+      // Change the directory name to "vanillaSelectBox" if needed.
+      if (is_dir($extracted_dirname)) {
+        $this->drushMoveDir($extracted_dirname, 'vanillaSelectBox');
+        $dirname = 'vanillaSelectBox';
       }
 
       unlink($filename);
@@ -128,7 +147,16 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
       $args = ['wget', '-q', '--timeout=30', '-O', $destination_tmp, $url];
     }
     else {
-      $args = ['curl', '-s', '-L', '--connect-timeout', '30', '-o', $destination_tmp, $url];
+      $args = [
+        'curl',
+        '-s',
+        '-L',
+        '--connect-timeout',
+        '30',
+        '-o',
+        $destination_tmp,
+        $url,
+      ];
     }
     $process = Drush::process($args);
     $process->mustRun();
@@ -141,8 +169,7 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
       throw new \Exception(dt("The URL !url could not be downloaded.", ['!url' => $url]));
     }
     if ($destination) {
-      $fs = new Filesystem();
-      $fs->rename($destination_tmp, $destination, TRUE);
+      $this->fileSystem->move($destination_tmp, $destination, TRUE);
       return $destination;
     }
     return $destination_tmp;
@@ -156,8 +183,7 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
    * @return bool
    */
   public function drushMoveDir($src, $dest) {
-    $fs = new Filesystem();
-    $fs->rename($src, $dest, TRUE);
+    $this->fileSystem->move($src, $dest, 2);
     return TRUE;
   }
 
@@ -170,8 +196,7 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
    * @return bool
    */
   public function drushMkdir($path) {
-    $fs = new Filesystem();
-    $fs->mkdir($path);
+    $this->fileSystem->mkdir($path);
     return TRUE;
   }
 
@@ -180,36 +205,33 @@ class VanillaSelectBoxLibCommands extends DrushCommands {
    *
    * @param string $path
    *   The filename or directory.
-   * @param bool $destination
-   *   The destination path.
    *
    * @return mixed
    *
    * @throws \Exception
    */
-  public function drushTarballExtract($path, $destination = FALSE) {
-    $this->drushMkdir($destination);
+  public function drushTarballExtract($path) {
+    // $this->drushMkdir($destination);
     $cwd = getcwd();
     if (preg_match('/\.tgz$/', $path)) {
       drush_op('chdir', dirname($path));
-      $process = Drush::process(['tar', '-xvzf', $path, '-C', $destination]);
+      $process = Drush::process(['tar', '-xvzf', $path]);
       $process->run();
       $return = $process->isSuccessful();
       drush_op('chdir', $cwd);
 
       if (!$return) {
-        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . implode(PHP_EOL, $process->getOutput()), ['!filename' => $path]));
+        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . $process->getOutput(), ['!filename' => $path]));
       }
     }
     else {
       drush_op('chdir', dirname($path));
-      $process = Drush::process(['unzip', $path, '-d', $destination]);
+      $process = Drush::process(['unzip', $path]);
       $process->run();
       $return = $process->isSuccessful();
       drush_op('chdir', $cwd);
-
       if (!$return) {
-        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . implode(PHP_EOL, $process->getOutput()), ['!filename' => $path]));
+        throw new \Exception(dt('Unable to extract !filename.' . PHP_EOL . $process->getOutput(), ['!filename' => $path]));
       }
     }
 
