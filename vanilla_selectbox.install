@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Installation and uninstallation functions.
+ */
+
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+
+/**
+ * Implements hook_requirements().
+ */
+function vanilla_selectbox_requirements($phase) {
+  $requirements = [];
+
+  switch ($phase) {
+    case 'runtime':
+      module_load_include('module', 'vanilla_selectbox_lib');
+      $vanilla_selectbox_path = _vanilla_selectbox_lib_get_vanilla_selectbox_path();
+
+      if (!$vanilla_selectbox_path) {
+        $url = Url::fromUri(CHOSEN_WEBSITE_URL);
+        $link = Link::fromTextAndUrl(t('Vanilla SelectBox JavaScript file'), $url)->toString();
+
+        $requirements['vanilla_selectbox_js'] = [
+          'title' => t('Vanilla SelectBox JavaScript file'),
+          'value' => t('Not Installed'),
+          'severity' => REQUIREMENT_ERROR,
+          'description' => t('You need to <a href="@url">download</a> the @vanilla_selectbox and extract the entire contents of the archive into the %path directory in your Drupal installation directory.', ['@vanilla_selectbox' => $link, '%path' => 'libraries/vanillaSelectbox', '@url' => 'hhttps://github.com/PhilippeMarcMeyer/vanillaSelectBox']),
+        ];
+      }
+      else {
+        $requirements['vanilla_selectbox_js'] = [
+          'title' => t('Vanilla SelectBox JavaScript file'),
+          'severity' => REQUIREMENT_OK,
+          'value' => t('Installed'),
+        ];
+      }
+      break;
+  }
+
+  return $requirements;
+}

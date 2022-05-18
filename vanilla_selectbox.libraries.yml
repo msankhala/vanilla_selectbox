@@ -1,4 +1,18 @@
-vanilla-selectbox:
-  version: 1.x
+drupal.vanilla_selectbox:
+  remote: https://drupal.org/project/vanilla_selectbox
+  version: 1.0.3
+  license:
+      name: GNU GPL v2
+      url: https://www.drupal.org/about/licensing
+      gpl-compatible: true
   js:
     js/vanilla_selectbox.js: {}
+  css:
+    component:
+      css/vanilla-selectbox-drupal.css: {}
+  dependencies:
+    - vanilla_selectbox_lib/vanilla_selectbox
+drupal.vanilla_selectbox.all:
+  dependencies:
+    - vanilla_selectbox/drupal.vanilla_selectbox
+    - vanilla_selectbox_lib/vanilla_selectbox.css

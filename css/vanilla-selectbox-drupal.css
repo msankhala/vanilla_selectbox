@@ -1,0 +1,14 @@
+/**
+ * @file
+ * Drupal-specific CSS fixes for the vanilla_selectbox module
+ */
+
+/* .filter-wrapper {
+  overflow: visible !important;
+}
+
+.filter-wrapper:after {
+  content: "";
+  display: block;
+  clear: both;
+} */

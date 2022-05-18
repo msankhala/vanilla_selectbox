@@ -1,0 +1,7 @@
+vanilla_selectbox.admin:
+  path: 'admin/config/user-interface/vanilla-selectbox'
+  defaults:
+    _form: '\Drupal\vanilla_selectbox\Form\VanillaSelectBoxConfigForm'
+    _title: 'Vanilla SelectBox'
+  requirements:
+    _permission: 'administer site configuration'

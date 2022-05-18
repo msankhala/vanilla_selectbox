@@ -1,0 +1,5 @@
+chosen.admin:
+  title: 'Vanilla SelectBox'
+  parent: system.admin_config_ui
+  description: 'Configuration for Vanilla SelectBox plugin.'
+  route_name: vanilla_selectbox.admin

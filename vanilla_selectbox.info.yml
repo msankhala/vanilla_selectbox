@@ -3,3 +3,6 @@ type: module
 description: 'This module provides the dropdown select list with vanilla selecbox library.'
 core_version_requirement: ^8 || ^9
 package: 'User Interface'
+configure: vanilla_selectbox.admin
+dependencies:
+  - vanilla_selectbox:vanilla_selectbox_lib
