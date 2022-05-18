@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Psr\Log\LogLevel;
 
 /**
- * The Chosen plugin URI.
+ * The Vanilla SelectBox plugin URI.
  */
 define('VANILLA_SELECTBOX_DOWNLOAD_URI', 'https://github.com/PhilippeMarcMeyer/vanillaSelectBox/archive/refs/heads/master.zip');
 
@@ -23,17 +23,17 @@ define('VANILLA_SELECTBOX_DOWNLOAD_URI', 'https://github.com/PhilippeMarcMeyer/v
  *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
  *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
  */
-class ChosenLibCommands extends DrushCommands {
+class VanillaSelectBoxLibCommands extends DrushCommands {
 
   /**
-   * Download and install the Chosen plugin.
+   * Download and install the Vanilla SelectBox plugin.
    *
    * @param string $path
-   *   Optional. A path where to install the Chosen plugin. If omitted Drush
+   *   Optional. A path where to install the Vanilla SelectBox plugin. If omitted Drush
    *   will use the default location.
    *
-   * @command chosen:plugin
-   * @aliases chosenplugin,chosen-plugin
+   * @command vanilla_selectbox:plugin
+   * @aliases vanilla_selectbox_plugin,vanilla-selectbox-plugin
    *
    * @throws \Exception
    */
@@ -45,7 +45,7 @@ class ChosenLibCommands extends DrushCommands {
     // Create the path if it does not exist.
     if (!is_dir($path)) {
       drush_op('mkdir', $path);
-      $this->drush_log(dt('Directory @path was created', ['@path' => $path]), 'notice');
+      $this->drushLog(dt('Directory @path was created', ['@path' => $path]), 'notice');
     }
 
     // Set the directory to the download location.
@@ -53,34 +53,34 @@ class ChosenLibCommands extends DrushCommands {
     chdir($path);
 
     // Download the zip archive.
-    if ($filepath = $this->drush_download_file(CHOSEN_DOWNLOAD_URI)) {
+    if ($filepath = $this->drushDownloadFile(CHOSEN_DOWNLOAD_URI)) {
       $filename = basename($filepath);
       $dirname = basename($filepath, '.zip');
 
-      // Remove any existing Chosen plugin directory.
-      if (is_dir($dirname) || is_dir('chosen')) {
+      // Remove any existing Vanilla SelectBox plugin directory.
+      if (is_dir($dirname) || is_dir('vanilla_selectbox')) {
         Filesystem::remove($dirname, TRUE);
-        Filesystem::remove('chosen', TRUE);
-        $this->drush_log(dt('A existing Chosen plugin was deleted from @path', ['@path' => $path]), 'notice');
+        Filesystem::remove('vanilla_selectbox', TRUE);
+        $this->drushLog(dt('A existing Vanilla SelectBox plugin was deleted from @path', ['@path' => $path]), 'notice');
       }
 
       // Decompress the zip archive.
-      $this->drush_tarball_extract($filename, $dirname);
+      $this->drushTarballExtract($filename, $dirname);
 
-      // Change the directory name to "chosen" if needed.
-      if ('chosen' !== $dirname) {
-        $this->drush_move_dir($dirname, 'chosen');
-        $dirname = 'chosen';
+      // Change the directory name to "vanilla_selectbox" if needed.
+      if ('vanilla_selectbox' !== $dirname) {
+        $this->drushMoveDir($dirname, 'vanilla_selectbox');
+        $dirname = 'vanilla_selectbox';
       }
 
       unlink($filename);
     }
 
     if (is_dir($dirname)) {
-      $this->drush_log(dt('Chosen plugin has been installed in @path', ['@path' => $path]), 'success');
+      $this->drushLog(dt('Vanilla SelectBox plugin has been installed in @path', ['@path' => $path]), 'success');
     }
     else {
-      $this->drush_log(dt('Drush was unable to install the Chosen plugin to @path', ['@path' => $path]), 'error');
+      $this->drushLog(dt('Drush was unable to install the Vanilla SelectBox plugin to @path', ['@path' => $path]), 'error');
     }
 
     // Set working directory back to the previous working directory.
@@ -95,7 +95,7 @@ class ChosenLibCommands extends DrushCommands {
    * @param mixed $type
    *   The log type.
    */
-  public function drush_log($message, $type = LogLevel::INFO) {
+  public function drushLog($message, $type = LogLevel::INFO) {
     $this->logger()->log($type, $message);
   }
 
@@ -108,14 +108,14 @@ class ChosenLibCommands extends DrushCommands {
    *   The destination file.
    * @throws \Exception
    */
-  public function drush_download_file($url, $destination = FALSE) {
+  public function drushDownloadFile($url, $destination = FALSE) {
     // Generate destination if omitted.
     if (!$destination) {
       $file = basename(current(explode('?', $url, 2)));
       $destination = getcwd() . '/' . basename($file);
     }
 
-    // Copied from: \Drush\Commands\SyncViaHttpCommands::downloadFile
+    // Copied from: \Drush\Commands\SyncViaHttpCommands::downloadFile.
     static $use_wget;
     if ($use_wget === NULL) {
       $process = Drush::process(['which', 'wget']);
@@ -155,33 +155,40 @@ class ChosenLibCommands extends DrushCommands {
    *   The new filename or directory.
    * @return bool
    */
-  public function drush_move_dir($src, $dest) {
+  public function drushMoveDir($src, $dest) {
     $fs = new Filesystem();
     $fs->rename($src, $dest, TRUE);
     return TRUE;
   }
 
   /**
+   * Create a directory.
+   *
    * @param string $path
    *   The make directory path.
+   *
    * @return bool
    */
-  public function drush_mkdir($path) {
+  public function drushMkdir($path) {
     $fs = new Filesystem();
     $fs->mkdir($path);
     return TRUE;
   }
 
   /**
+   * Extracts a tarball.
+   *
    * @param string $path
    *   The filename or directory.
    * @param bool $destination
    *   The destination path.
+   *
    * @return mixed
+   *
    * @throws \Exception
    */
-  public function drush_tarball_extract($path, $destination = FALSE) {
-    $this->drush_mkdir($destination);
+  public function drushTarballExtract($path, $destination = FALSE) {
+    $this->drushMkdir($destination);
     $cwd = getcwd();
     if (preg_match('/\.tgz$/', $path)) {
       drush_op('chdir', dirname($path));
