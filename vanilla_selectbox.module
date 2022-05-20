@@ -13,7 +13,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 
 /**
- * Define chosen library url.
+ * Define vanilla_selectbox library url.
  */
 define('VANILLA_SELECTBOX_WEBSITE_URL', 'https://github.com/PhilippeMarcMeyer/vanillaSelectBox');
 define('VANILLA_SELECTBOX_INCLUDE_ADMIN', 0);
@@ -35,6 +35,119 @@ function vanilla_selectbox_help($route_name, RouteMatchInterface $route_match) {
       return $output;
 
     default:
+  }
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function vanilla_selectbox_element_info_alter(&$info) {
+  $info['select']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelect';
+
+  if (\Drupal::moduleHandler()->moduleExists('date')) {
+    $info['date_combo']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderDateCombo';
+  }
+
+  if (\Drupal::moduleHandler()->moduleExists('select_or_other')) {
+    $info['select_or_other']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelectOther';
+  }
+
+  if (\Drupal::moduleHandler()->moduleExists('synonyms')) {
+    $info['synonyms_entity_select']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelect';
+  }
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ *
+ * Add entity type  and bundle information to the widget.
+ *
+ * @see vanilla_selectbox_pre_render_select()
+ */
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function vanilla_selectbox_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
+  /** @var \Drupal\Core\Field\FieldDefinitionInterface $field_definition */
+  $field_definition = $context['items']->getFieldDefinition();
+  $element['#entity_type'] = $field_definition->getTargetEntityTypeId();
+  $element['#bundle'] = $field_definition->getTargetBundle();
+}
+
+/**
+ * Helper function to attach the Vanilla SelecBox library and settings to a
+ * given element.
+ *
+ * @param array &$element
+ *   An render array element.
+ */
+function vanilla_selectbox_attach_library(array &$element) {
+  $element['#attached']['library'][] = 'vanilla_selectbox/drupal.vanilla_selectbox';
+
+  // Add specific styling for Claro.
+  // if (\Drupal::theme()->getActiveTheme()->getName() === 'claro') {
+  //   $element['#attached']['library'][] = 'vanilla_selectbox/vanilla_selectbox.claro';
+  // }
+
+  $vanilla_selectbox_conf = \Drupal::config('vanilla_selectbox.settings');
+
+  $css_disabled_themes = $vanilla_selectbox_conf->get('disabled_themes');
+  if (empty($css_disabled_themes)) {
+    $css_disabled_themes = [];
+  }
+
+  // Only add the Vanilla SelecBox CSS if it is not disabled for the active theme.
+  $theme_name = \Drupal::theme()->getActiveTheme()->getName();
+  if (!in_array($theme_name, $css_disabled_themes, TRUE)) {
+    $element['#attached']['library'][] = 'vanilla_selectbox_lib/vanilla_selectbox.css';
+  }
+
+  $options = [
+    'disable_search' => (bool) $vanilla_selectbox_conf->get('disable_search'),
+    'disable_select_all' => (int) $vanilla_selectbox_conf->get('disable_select_all'),
+    'stay_open' => (bool) $vanilla_selectbox_conf->get('stay_open'),
+    'maximum_width' => $vanilla_selectbox_conf->get('maximum_width'),
+    'minimum_width' => $vanilla_selectbox_conf->get('minimum_width'),
+    'maximum_height' => $vanilla_selectbox_conf->get('maximum_height'),
+    'maximum_option_width' => $vanilla_selectbox_conf->get('maximum_option_width'),
+    'maximum_select' => $vanilla_selectbox_conf->get('maximum_select'),
+    'item_separator' => $vanilla_selectbox_conf->get('item_separator'),
+    'placeholder_text' => $vanilla_selectbox_conf->get('placeholder_text'),
+  ];
+
+  $element['#attached']['drupalSettings']['vanilla_selectbox'] = [
+    'selector' => $vanilla_selectbox_conf->get('css_selector'),
+    'options' => $options,
+  ];
+}
+
+/**
+ * Recurse through an element to apply the vanilla_selectbox property to any
+ * select fields.
+ *
+ * @param array $element
+ *   The element.
+ * @param int $vanilla_selectbox_value
+ *   Vanilla SelecBox setting
+ *
+ * @return array
+ *   The element.
+ */
+function vanilla_selectbox_element_apply_property_recursive(array &$element, $vanilla_selectbox_value = NULL) {
+  if (!isset($vanilla_selectbox_value)) {
+    if (isset($element['#vanilla_selectbox'])) {
+      $vanilla_selectbox_value = $element['#vanilla_selectbox'];
+    }
+    else {
+      return;
+    }
+  }
+  if (isset($element['#type']) && $element['#type'] == 'select') {
+    $element['#vanilla_selectbox'] = $vanilla_selectbox_value;
+  }
+  foreach (Element::children($element) as $key) {
+    vanilla_selectbox_element_apply_property_recursive($element[$key], $vanilla_selectbox_value);
   }
 }
 

@@ -24,7 +24,7 @@ class VanillaSelectBoxFormRender implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Apply Chosen to a select element.
+   * Render API callback: Apply Vanilla Selectbox to a select element.
    *
    * @param array $element
    *   The element.
@@ -47,22 +47,22 @@ class VanillaSelectBoxFormRender implements TrustedCallbackInterface {
     // If the #vanilla_selectbox FAPI property is set, then add the appropriate class.
     if (isset($element['#vanilla_selectbox'])) {
       if (!empty($element['#vanilla_selectbox'])) {
-        // Element has opted-in for Chosen, ensure the library gets added.
+        // Element has opted-in for Vanilla Selectbox, ensure the library gets added.
         $element['#attributes']['class'][] = 'vanilla-selectbox-enable';
       }
       else {
         $element['#attributes']['class'][] = 'vanilla-selectbox-disable';
-        // Element has opted-out of Chosen. Do not add the library now.
+        // Element has opted-out of Vanilla Selectbox. Do not add the library now.
         return $element;
       }
     }
     elseif (isset($element['#attributes']['class']) && is_array($element['#attributes']['class'])) {
       if (array_intersect($element['#attributes']['class'], ['vanilla-selectbox-disable'])) {
-        // Element has opted-out of Chosen. Do not add the library now.
+        // Element has opted-out of Vanilla Selectbox. Do not add the library now.
         return $element;
       }
       elseif (array_intersect($element['#attributes']['class'], ['vanilla-selectbox-enable'])) {
-        // Element has opted-in for Chosen, ensure the library gets added.
+        // Element has opted-in for Vanilla Selectbox, ensure the library gets added.
       }
     }
     else {
@@ -97,7 +97,7 @@ class VanillaSelectBoxFormRender implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Apply Chosen to a date_combo element.
+   * Render API callback: Apply Vanilla Selectbox to a date_combo element.
    *
    * @param array $element
    *   The element.
@@ -115,7 +115,7 @@ class VanillaSelectBoxFormRender implements TrustedCallbackInterface {
   }
 
   /**
-   * Render API callback: Apply Chosen to a select_or_other element.
+   * Render API callback: Apply Vanilla Selectbox to a select_or_other element.
    *
    * @param array $element
    *   The element.
