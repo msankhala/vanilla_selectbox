@@ -11,6 +11,9 @@ drupal.vanilla_selectbox:
     component:
       css/vanilla-selectbox-drupal.css: {}
   dependencies:
+    - core/drupal
+    - core/jquery
+    - core/jquery.once
     - vanilla_selectbox_lib/vanilla_selectbox
 drupal.vanilla_selectbox.all:
   dependencies:
