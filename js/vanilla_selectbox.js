@@ -56,8 +56,7 @@
      */
     createVanillaSelectBox: function(element) {
       var $element = $(element);
-      // element.vanilla_selectbox(this.getElementOptions($element));
-      console.log($element.attr('id'))
+      // Each element must have id attribute.
       new vanillaSelectBox(`#${$element.attr('id')}`, this.getElementOptions($element));
     },
 
