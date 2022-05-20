@@ -1,0 +1,13 @@
+css_selector: 'select:visible'
+disable_search: false
+disable_select_all: false
+stay_open: false
+maximum_width: 200
+minimum_width: 200
+maximum_height: null
+maximum_option_width: null
+maximum_select: null
+item_separator: ','
+placeholder_text: 'Choose some options'
+vanilla_selectbox_include: 2
+disabled_themes: { }

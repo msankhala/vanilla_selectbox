@@ -1,0 +1,45 @@
+vanilla_selectbox.settings:
+  type: config_object
+  label: 'Vailla SelectBox settings'
+  mapping:
+    css_selector:
+      type: string
+      label: 'Apply Vailla SelectBox to the following elements'
+    disable_search:
+      type: boolean
+      label: 'Disable search box'
+    disable_search_all:
+      type: boolean
+      label: 'Disable select all'
+    stay_open:
+      type: boolean
+      label: 'Stay open'
+    maximum_width:
+      type: integer
+      label: 'The maximum width of the Vanilla SelectBox widget.'
+    minimum_width:
+      type: integer
+      label: 'The minimum width of the Vanilla SelectBox widget.'
+    maximum_height:
+      type: integer
+      label: 'The maximum widht of the Vanilla SelectBox widget'
+    minimum_option_width:
+      type: integer
+      label: 'The minimum option width of the Vanilla SelectBox widget.'
+    maximum_select:
+      type: integer
+      label: 'The maximum allowed select option of the Vanilla SelectBox widget.'
+    item_separator:
+      type: string
+      label: 'The item separator shown in widget'
+    placeholder_text:
+      type: string
+      label: 'The placeholder text of Vanilla SelectBox widget'
+    vanilla_selectbox_include:
+      type: integer
+      label: 'Use Vanilla SelectBox for admin pages and/or front end pages'
+    disabled_themes:
+      type: sequence
+      label: 'Disable the default Vanilla SelectBox theme for the following themes'
+      sequence:
+        type: string
