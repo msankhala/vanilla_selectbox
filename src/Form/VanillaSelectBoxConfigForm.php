@@ -86,11 +86,11 @@ class VanillaSelectBoxConfigForm extends ConfigFormBase {
     // Vanilla SelectBox settings:
     $vanilla_selectbox_conf = $this->configFactory->get('vanilla_selectbox.settings');
 
-    $form['css_selector'] = [
+    $form['jquery_selector'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Apply Vanilla SelectBox to the following elements'),
       '#description' => $this->t('A comma-separated list of css selectors to apply Vanilla SelectBox to, such as <code>select#edit-operation, select#edit-type</code> or <code>.vanilla-selectbox-select</code>. Defaults to <code>select</code> to apply Vanilla SelectBox to all <code>&lt;select&gt;</code> elements.'),
-      '#default_value' => $vanilla_selectbox_conf->get('css_selector'),
+      '#default_value' => $vanilla_selectbox_conf->get('jquery_selector'),
     ];
 
     $form['options'] = [
@@ -223,7 +223,7 @@ class VanillaSelectBoxConfigForm extends ConfigFormBase {
     $config = $this->configFactory->getEditable('vanilla_selectbox.settings');
 
     $config
-      ->set('css_selector', $form_state->getValue('css_selector'))
+      ->set('jquery_selector', $form_state->getValue('jquery_selector'))
       ->set('disable_search', $form_state->getValue('disable_search'))
       ->set('disable_select_all', $form_state->getValue('disable_select_all'))
       ->set('stay_open', $form_state->getValue('stay_open'))

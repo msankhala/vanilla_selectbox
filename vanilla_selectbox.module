@@ -117,7 +117,7 @@ function vanilla_selectbox_attach_library(array &$element) {
   ];
 
   $element['#attached']['drupalSettings']['vanilla_selectbox'] = [
-    'selector' => $vanilla_selectbox_conf->get('css_selector'),
+    'selector' => $vanilla_selectbox_conf->get('jquery_selector'),
     'options' => $options,
   ];
 }
