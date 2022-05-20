@@ -150,14 +150,3 @@ function vanilla_selectbox_element_apply_property_recursive(array &$element, $va
     vanilla_selectbox_element_apply_property_recursive($element[$key], $vanilla_selectbox_value);
   }
 }
-
-/**
- * Implements hook_theme().
- */
-function vanilla_selectbox_theme() {
-  return [
-    'vanilla_selectbox' => [
-      'render element' => 'children',
-    ],
-  ];
-}
