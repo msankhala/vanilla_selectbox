@@ -42,18 +42,18 @@ function vanilla_selectbox_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_element_info_alter().
  */
 function vanilla_selectbox_element_info_alter(&$info) {
-  $info['select']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelect';
+  $info['select']['#pre_render'][] = '\Drupal\vanilla_selectbox\VanillaSelectBoxFormRender::preRenderSelect';
 
   if (\Drupal::moduleHandler()->moduleExists('date')) {
-    $info['date_combo']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderDateCombo';
+    $info['date_combo']['#pre_render'][] = '\Drupal\vanilla_selectbox\VanillaSelectBoxFormRender::preRenderDateCombo';
   }
 
   if (\Drupal::moduleHandler()->moduleExists('select_or_other')) {
-    $info['select_or_other']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelectOther';
+    $info['select_or_other']['#pre_render'][] = '\Drupal\vanilla_selectbox\VanillaSelectBoxFormRender::preRenderSelectOther';
   }
 
   if (\Drupal::moduleHandler()->moduleExists('synonyms')) {
-    $info['synonyms_entity_select']['#pre_render'][] = '\Drupal\vanilla_selectbox\Vanilla SelecBoxFormRender::preRenderSelect';
+    $info['synonyms_entity_select']['#pre_render'][] = '\Drupal\vanilla_selectbox\VanillaSelectBoxFormRender::preRenderSelect';
   }
 }
 
@@ -104,16 +104,16 @@ function vanilla_selectbox_attach_library(array &$element) {
   }
 
   $options = [
-    'disable_search' => (bool) $vanilla_selectbox_conf->get('disable_search'),
-    'disable_select_all' => (int) $vanilla_selectbox_conf->get('disable_select_all'),
-    'stay_open' => (bool) $vanilla_selectbox_conf->get('stay_open'),
-    'maximum_width' => $vanilla_selectbox_conf->get('maximum_width'),
-    'minimum_width' => $vanilla_selectbox_conf->get('minimum_width'),
-    'maximum_height' => $vanilla_selectbox_conf->get('maximum_height'),
-    'maximum_option_width' => $vanilla_selectbox_conf->get('maximum_option_width'),
-    'maximum_select' => $vanilla_selectbox_conf->get('maximum_select'),
+    'search' => !(bool) $vanilla_selectbox_conf->get('disable_search'),
+    'disableSelectAll' => (bool) $vanilla_selectbox_conf->get('disable_select_all'),
+    'stayOpen' => (bool) $vanilla_selectbox_conf->get('stay_open'),
+    'maxWidth' => $vanilla_selectbox_conf->get('maximum_width'),
+    'minWidth' => $vanilla_selectbox_conf->get('minimum_width'),
+    'maxHeight' => $vanilla_selectbox_conf->get('maximum_height'),
+    'maxOptionWidth' => $vanilla_selectbox_conf->get('maximum_option_width'),
+    'maxSelect' => $vanilla_selectbox_conf->get('maximum_select'),
     'item_separator' => $vanilla_selectbox_conf->get('item_separator'),
-    'placeholder_text' => $vanilla_selectbox_conf->get('placeholder_text'),
+    'placeHolder' => $vanilla_selectbox_conf->get('placeholder_text'),
   ];
 
   $element['#attached']['drupalSettings']['vanilla_selectbox'] = [
